@@ -1,7 +1,9 @@
-# 2018-06-20 R Learner Group examples
+# 2018-06-20 R Learners examples
 #
-# Preview of the dplyr package, part of the tidyvserse. Cheatsheet at
+# Preview of the dplyr and ggplot2 packages, both part of the tidyvserse.
+# Cheatsheets at:
 # https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+# https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
 
 library(tidyverse)
 
