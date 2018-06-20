@@ -14,7 +14,8 @@ experiment <- read_csv('http://www.maple-lab.org/r-sample-data.csv')
 # base R
 subset(experiment, TestingRoom == 3)
 
-# tidyverse
+# tidyverse 
+filter(experiment, TestingRoom == 3)
 experiment %>% filter(TestingRoom == 3)
 
 # subsetting variables ----------------------------------------------------
@@ -33,9 +34,9 @@ experiment %>%
 experiment$log_RT_baseR <- log(experiment$RT)
 
 # tidyverse
+# mutate() add new variable(s); here log_RT_tidy
+experiment %>% mutate(log_RT_tidy = log(RT))
 experiment <- experiment %>% mutate(log_RT_tidy = log(RT))
-
-View(experiment)
 
 # summary stats (global) --------------------------------------------------
 
@@ -71,7 +72,6 @@ experiment %>%
     max_RT = max(RT),
     mean_RT = mean(RT),
     median_RT = median(RT),
-    mode_RT = mode(RT),
     sd_RT = sd(RT),
     var_RT = var(RT),
     has_NA = any(is.na(RT))
@@ -80,11 +80,13 @@ experiment %>%
 # rename column(s) --------------------------------------------------------
 
 experiment <- experiment %>% rename(item_name = ItemName)
+colnames(experiment)
 
 # sorting -----------------------------------------------------------------
 
 # ascending order
 experiment %>% arrange(RT)
+experiment %>% arrange(TestingRoom, RT)
 
 # decending order
 experiment %>% arrange(desc(RT))
@@ -112,7 +114,7 @@ ggplot(data = experiment, mapping = aes(x = Age, y = RT)) +
 
 experiment %>%
   group_by(Age) %>%
-  mutate(mean_RT = mean(RT)) %>%
+  summarize(mean_RT = mean(RT)) %>%
   ggplot(mapping = aes(x = Age, y = mean_RT)) +
   geom_col()
 
@@ -122,7 +124,7 @@ ggplot(data = experiment, mapping = aes(x = Age)) +
 # ggplot geoms -----------------------------------------------------------
 
 ggplot(data = experiment, mapping = aes(Age, RT)) +
-  geom_point()
+  geom_point() 
 
 ggplot(data = experiment, mapping = aes(Age, RT)) +
   geom_boxplot()
