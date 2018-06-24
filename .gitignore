@@ -1,8 +1,9 @@
+**/figs/**
+
+*.key
+*.Rhistory
+
 scott/
 
 R Student Learner Group.docx
 lecture_ideas.txt
-
-*.key
-*.Rhistory
-*.ai
