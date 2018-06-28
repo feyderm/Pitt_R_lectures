@@ -1,8 +1,8 @@
 # 2018-06-20 R Learners examples
 #
 # Topics:
-#   - coding / re-coding
-#   - cleaning
+#   - re-coding / coding
+#   - cleaning / regex
 #   - reshaping
 #   - merging / joining
 #
@@ -13,12 +13,19 @@ library(tidyverse)
 
 experiment <- read_csv('http://www.maple-lab.org/r-sample-data.csv')
 
-# coding / re-coding ---------------------------------------------------------------
+# review
+filter(experiment, Age == 35)
+experiment %>% filter(Age == 35) %>% select(ItemName)
 
-experiment %>%
-  mutate(
-    is_plausible = recode(Condition, 'Implausible' = FALSE, 'Plausible' = TRUE )
+experiment %>% mutate(RT_plus_10 = RT + 10)
+
+# re-coding ---------------------------------------------------------------
+
+experiment %>% mutate(
+    is_plausible = recode(Condition, 'Implausible' = FALSE, 'Plausible' = TRUE)
   )
+
+# coding ------------------------------------------------------------------
 
 experiment %>%
   ggplot(aes(RT)) +
@@ -28,19 +35,32 @@ experiment %>%
   mutate(RT_group = case_when(
       RT  > 1000 ~ 'High',
       RT <= 1000 ~ 'Normal')
-  )
+  ) %>%
+  select(RT, RT_group)
 
 # cleaning ----------------------------------------------------------------
 
-str_extract('xxx_123', '123')
-str_extract('xxx_123', '[:digit:]')
-str_extract('xxx_123', '[:digit:]+')
-str_extract('xxx_123', '[:alpha:]')
-str_extract('xxx_123', '[:alpha:]+')
+# digits
+str_extract('abc_123', '[:digit:]')
+str_extract('abc_123', '[:digit:]+')
+str_extract('abc_123_def', '[:digit:]+')
+str_extract('abc_123_def', '\\d+')        # '\\d' is shorthand for [:digit;]
 
+# alphabet (leters A-Z, a-z)
+str_extract('abc_123', '[:alpha:]')
+str_extract('abc_123', '[:alpha:]+')
+str_extract('ABC_123', '[:alpha:]+')
+str_extract('abc_123_def', '[:alpha:]+')
+str_extract_all('abc_123_def', '[:alpha:]+')
+
+# anchors
+str_extract("abc", "^[:alpha:]")
+str_extract("abc", "[:alpha:]$")
+
+# clean dataframe/tibble variable 
 df <- tibble(
   id = c('subject_1', 'subject_2', 'subject_3'),
-  col_to_extract = c('xxx_123', 'xxx_456', 'xxx_789')
+  col_to_extract = c('abc_123', 'abc_456', 'abc_789')
 )
 
 df %>% mutate(
@@ -52,8 +72,18 @@ df %>% mutate(nums = str_extract(col_to_extract, '1[:digit:]+'))
 
 df %>% mutate(nums = str_extract(col_to_extract, '[14][:digit:]+'))
 
+# look arounds
+# (positive) look-behind: '_' must match, but not included in output 
+str_extract("123_456", "(?<=_)[:digit:]+")
+str_extract("123456", "(?<=_)[:digit:]+")
+
+# (positive) look-ahead: '_' must match, but not included in output 
+str_extract("123_456", "[:digit:]+(?=_)")
+str_extract("123456", "[:digit:]+(?=_)")
+
+# remove a pattern instead of extracting one
 df %>% mutate(
-    nums = str_remove(col_to_extract, 'xxx_'),
+    nums = str_remove(col_to_extract, '[:alpha:]+_'),
     chars = str_remove(col_to_extract, '_[:digit:]+')
   )
 
@@ -72,7 +102,7 @@ df_gathered %>% spread(key = "year", value = "cases")
 # merging / joining -------------------------------------------------------
 
 # add variables
-experiment_vars <- tibble(obs_id = 1:nrow(experiment))
+experiment_vars <- tibble(obs_id = 1:nrow(experiment))   # tibble/df
 experiment %>% bind_cols(experiment_vars)
 
 # add observations
