@@ -4,7 +4,7 @@
 #   - re-coding / coding
 #   - cleaning / regex
 #   - reshaping
-#   - merging / joining
+#   - merging
 #
 # Cheatsheets at: https://www.rstudio.com/resources/cheatsheets/
 
@@ -44,7 +44,7 @@ experiment %>%
 str_extract('abc_123', '[:digit:]')
 str_extract('abc_123', '[:digit:]+')
 str_extract('abc_123_def', '[:digit:]+')
-str_extract('abc_123_def', '\\d+')        # '\\d' is shorthand for [:digit;]
+str_extract('abc_123_def', '\\d+')        # '\\d' is shorthand for [:digit:]
 
 # alphabet (leters A-Z, a-z)
 str_extract('abc_123', '[:alpha:]')
@@ -99,7 +99,7 @@ df_gathered <- df %>% gather(`1999`, `2000`, key = "year", value = "cases")
 
 df_gathered %>% spread(key = "year", value = "cases") 
 
-# merging / joining -------------------------------------------------------
+# merging -----------------------------------------------------------------
 
 # add variables
 experiment_vars <- tibble(obs_id = 1:nrow(experiment))   # tibble/df
@@ -117,19 +117,3 @@ experiment_obs <- tibble(
 )
 
 experiment %>% bind_rows(experiment_obs)
-
-# joins
-X <- tibble(
-  id = c('A', 'B', 'C'),
-  var_1 = c(1, 2, 3)
-)
-
-Y <- tibble(
-  id = c('A', 'B', 'D'),
-  var_2 = c(TRUE, TRUE, FALSE)
-)
-
-X %>% full_join(Y, by = 'id')
-X %>% left_join(Y, by = 'id')
-X %>% right_join(Y, by = 'id')
-X %>% inner_join(Y, by = 'id')
